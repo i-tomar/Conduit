@@ -1,0 +1,93 @@
+# Conduit route table.
+# Prices are sample list rates for local cost estimates, not invoices.
+# Replace them with the rates on your provider contract.
+
+providers:
+  groq:
+    type: openai_compat
+    base_url: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+  openai:
+    type: openai_compat
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+  gemini:
+    type: openai_compat
+    base_url: https://generativelanguage.googleapis.com/v1beta/openai
+    api_key_env: GEMINI_API_KEY
+  mock:
+    type: mock
+
+aliases:
+  # Ordered failover. The first configured, closed-circuit target serves the call.
+  fast:
+    targets:
+      - provider: groq
+        model: llama-3.1-8b-instant
+      - provider: gemini
+        model: gemini-2.5-flash
+      - provider: openai
+        model: gpt-4o-mini
+  smart:
+    targets:
+      - provider: openai
+        model: gpt-4o
+      - provider: gemini
+        model: gemini-2.5-pro
+      - provider: groq
+        model: llama-3.3-70b-versatile
+  # Offline alias. No API key required.
+  mock:
+    targets:
+      - provider: mock
+        model: echo
+
+pricing:
+  groq:
+    llama-3.1-8b-instant:
+      input_per_million: "0.05"
+      output_per_million: "0.08"
+    llama-3.3-70b-versatile:
+      input_per_million: "0.59"
+      output_per_million: "0.79"
+  openai:
+    gpt-4o-mini:
+      input_per_million: "0.15"
+      output_per_million: "0.60"
+    gpt-4o:
+      input_per_million: "2.50"
+      output_per_million: "10.00"
+  gemini:
+    gemini-2.5-flash:
+      input_per_million: "0.15"
+      output_per_million: "0.60"
+    gemini-2.5-pro:
+      input_per_million: "1.25"
+      output_per_million: "10.00"
+  mock:
+    echo:
+      input_per_million: "0"
+      output_per_million: "0"
+
+retry:
+  max_attempts: 2
+  base_delay_seconds: 0.2
+  max_delay_seconds: 2.0
+
+circuit_breaker:
+  failure_threshold: 5
+  recovery_seconds: 30
+
+cache:
+  exact_ttl_seconds: 3600
+  semantic_enabled: false
+  semantic_threshold: 0.92
+  semantic_max_entries: 200
+  semantic_dims: 64
+  # tenant: identical prompts from different API keys do not share answers.
+  # global: higher hit rate when prompts are not tenant-confidential.
+  scope: tenant
+
+timeouts:
+  request_seconds: 30
+  connect_seconds: 5
