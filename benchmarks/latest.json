@@ -1,0 +1,70 @@
+{
+  "label": "mock-provider, single process, loopback HTTP, in-memory Redis, SQLite",
+  "python": "3.12.3",
+  "platform": "Linux-6.12.113+-x86_64-with-glibc2.39",
+  "cpu_count": 4,
+  "serial_requests": 120,
+  "loaded_requests": 240,
+  "loaded_concurrency": 20,
+  "direct_mock": {
+    "n": 120.0,
+    "p50_ms": 0.001387000111208181,
+    "p95_ms": 0.0016290000530716497,
+    "p99_ms": 0.003040999899894814,
+    "mean_ms": 0.0015302666705944528
+  },
+  "health_serial": {
+    "n": 120.0,
+    "p50_ms": 3.9662060000864585,
+    "p95_ms": 4.5810740000433725,
+    "p99_ms": 5.1999569998315565,
+    "mean_ms": 3.9801848916757385
+  },
+  "gateway_miss_serial": {
+    "n": 120.0,
+    "p50_ms": 15.17237899997781,
+    "p95_ms": 16.838538999991215,
+    "p99_ms": 18.50566300004175,
+    "mean_ms": 15.087480033325088
+  },
+  "gateway_hit_serial": {
+    "n": 120.0,
+    "p50_ms": 13.728732000117816,
+    "p95_ms": 15.93719700008478,
+    "p99_ms": 17.281218999869452,
+    "mean_ms": 14.036242483325623
+  },
+  "gateway_miss_loaded": {
+    "n": 240.0,
+    "p50_ms": 97.62067999986357,
+    "p95_ms": 908.7508959999013,
+    "p99_ms": 1491.5839120001237,
+    "mean_ms": 238.8495693083172
+  },
+  "gateway_hit_loaded": {
+    "n": 240.0,
+    "p50_ms": 115.8883660000356,
+    "p95_ms": 715.668745999892,
+    "p99_ms": 1262.7619799998229,
+    "mean_ms": 218.90403297083384
+  },
+  "stream_ttft_serial": {
+    "n": 40.0,
+    "p50_ms": 11.407944999973552,
+    "p95_ms": 12.591474000146263,
+    "p99_ms": 13.41961900016031,
+    "mean_ms": 11.22169625002698
+  },
+  "gateway_overhead_p95_ms": 16.836909999938143,
+  "cache_hit_p95_savings_ms": 0.9013419999064354,
+  "cache_hit_p95_savings_pct": 5.352851574040394,
+  "miss_throughput_rps": 81.00730903837366,
+  "hit_throughput_rps": 84.8802741787627,
+  "errors": {
+    "health": 0,
+    "miss_serial": 0,
+    "hit_serial": 0,
+    "miss_loaded": 0,
+    "hit_loaded": 0
+  }
+}

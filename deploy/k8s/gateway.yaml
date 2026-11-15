@@ -1,0 +1,92 @@
+# Sketch only. Point the image at a registry you control, and replace the
+# database, Redis, and pepper values before applying this file.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conduit
+  labels:
+    app: conduit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: conduit
+  template:
+    metadata:
+      labels:
+        app: conduit
+    spec:
+      containers:
+        - name: gateway
+          image: conduit:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: CONDUIT_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: conduit
+                  key: database-url
+            - name: CONDUIT_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: conduit
+                  key: redis-url
+            - name: CONDUIT_ADMIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: conduit
+                  key: admin-token
+            - name: CONDUIT_KEY_PEPPER
+              valueFrom:
+                secretKeyRef:
+                  name: conduit
+                  key: pepper
+            - name: GROQ_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: conduit
+                  key: groq-api-key
+                  optional: true
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: conduit
+                  key: openai-api-key
+                  optional: true
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: conduit
+                  key: gemini-api-key
+                  optional: true
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: conduit
+spec:
+  selector:
+    app: conduit
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
